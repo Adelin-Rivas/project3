@@ -160,13 +160,13 @@ const getUserSub = (request, response) => {
 
 
 
-const  = (request, response) => {
+const postUserSub = (request, response) => {
 
-  const {email,} =request.params
+  const {email, name,description, type,photo} =request.params
 
 
 
-  pool.query('SELECT  from  submission where email = $1', [email], (error, results) => {
+  pool.query('  from  submission where email = $1', [email], (error, results) => {
 
     if (error) {
       
