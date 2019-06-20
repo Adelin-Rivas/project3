@@ -19,8 +19,10 @@ app.get('/', (request, response) => {
 
 // User Registration and Sign in route 
 app.post('/users/registration', db.createUser);
-//app.post('/user/signin/', db.validate);
+app.post('/signin', db.validate);
 app.get('/userId',db.getUserById);
+app.post('/usersub', db.postUserSub);
+app.get('/usersub/post',db.getUserSub);
 
 //User Favorites create and get route 
 //app.post('/user/favorite/:email', db.postUserFavorite);

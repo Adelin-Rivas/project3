@@ -42,30 +42,28 @@ const createUser = (request, response) => {
 
 
 
-/*
+
 const validate = (request, response) => {
 		console.log('getting favs');
   const{email,password}=request.body
 	
 
 
-  pool.query("IF (EXISTS (SELECT * FROM Users WHERE email=[$1]"))
-   "email =$1 and password=$2"+
-       "ELSE SELECT NULL", [email][password], (error, results) => {
-	console.log('something');
+  pool.query('SELECT EXISTS(SELECT * FROM users WHERE  email= $1 AND password= $2)',[email,password], (error, results) => {
+
     if (error) {
-		console.log('error')
+		
 
       throw error
-
+		
     }
-
-    response.send(results.rows)
-
+    
+    let tf = response.send(results.rows[0])
+	
   })
 
 }
-*/
+
 
 
 
@@ -78,7 +76,7 @@ const validate = (request, response) => {
 
 const getUserById = (request, response) => {
 
-  const email = 'juan@gmail.com'//request.params.email
+  const {email} = request.body
   console.log(email)
 
 
@@ -90,7 +88,7 @@ const getUserById = (request, response) => {
       throw error
 
     }
-
+        
     response.send(results.rows)
 
   })
@@ -114,7 +112,8 @@ const getUserById = (request, response) => {
 
 const getUserFavorite = (request, response) => {
 		
-  const {email} = request.body.email
+  const {email} = request.body
+  console.log(email)
 	
 
 
@@ -137,14 +136,14 @@ const getUserFavorite = (request, response) => {
 
 
 
-
+// user get user sub
 const getUserSub = (request, response) => {
 
-  const email =request.params
+  const {email} =request.body
 
 
 
-  pool.query('SELECT  from  submission where email = $1', [email], (error, results) => {
+  pool.query('SELECT* FROM submissions where email = $1', [email], (error, results) => {
 
     if (error) {
       
@@ -160,13 +159,15 @@ const getUserSub = (request, response) => {
 
 
 
+// post sub
 const postUserSub = (request, response) => {
 
-  const {email, name,description, type,photo} =request.params
+  const {email, name,description, type,photo}=request.body
+  console.log(email)
 
 
 
-  pool.query('  from  submission where email = $1', [email], (error, results) => {
+  pool.query('INSERT INTO submissions(email,sub_name,sub_description,sub_type,sub_photo)VALUES($1,$2, $3, $4, $5)', [email, name,description, type,photo], (error, results) => {
 
     if (error) {
       
@@ -174,7 +175,9 @@ const postUserSub = (request, response) => {
 
     }
 
-    response.send(results.rows)
+    pool.query('SELECT * FROM submissions WHERE email = $1', [email], (err, res) => {
+		response.send(res.rows);	
+	});
 
   })
 
@@ -194,7 +197,9 @@ module.exports = {
 	createUser,
 	getUserFavorite,
 	getUserSub,
-	getUserById 
+	getUserById,
+	postUserSub,
+	validate
 
  
 
